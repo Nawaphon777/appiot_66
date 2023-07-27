@@ -13,7 +13,7 @@ const db = knex({
     port: process.env.MYSQL_PORT || 3306,
     user: process.env.MYSQL_USER || 'root',
     password: process.env.MYSQL_PASS || '',
-    database: process.env.MYSQL_DB || 'iot66',
+    database: process.env.MYSQL_DB || 'iot_66',
     supportBigNumber: true,
     timezone: '+7:00',
     dateStrings: true,
@@ -98,7 +98,6 @@ app.get('/delete', async (req, res) => {
     })
   }
 })
-
 app.get('/listedit', async (req, res) => {
   console.log('show id', req.query)
   let row = await db('member').where('id', req.query.id)
@@ -121,6 +120,30 @@ app.get('/insert', async (req, res) => {
     res.send({
       ok: 1,
       data: req.query,
+      ids: ids[0]
+    })
+  } catch (e) {
+    console.log(e.message)
+    res.send({
+      ok: 0,
+      error: e.message
+    })
+  }
+})// insert
+
+
+app.get('/insert', async (req, res) => {
+  try {
+    console.log(req.body)
+    console.log(req.body.name)
+    ids = await db('member').insert({
+      username: req.body.name,
+      password: req.body.password,
+      dep: req.body.dep
+    })
+    res.send({
+      ok: 1,
+      data: req.body,
       ids: ids[0]
     })
   } catch (e) {
